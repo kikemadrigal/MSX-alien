@@ -1,6 +1,6 @@
 #Agile method
 
-https://trello.com/b/Aoa4DEWz/alien
+
 https://github.com/kikemadrigal/MSX-alien/projects/1
 
 
@@ -35,9 +35,6 @@ http://msx.tipolisto.es/webmsx/standalone/?disk=files/alien2.dsk
 https://kikemadrigal.github.io/MSX1-MSX2-assambler-basic-fusion-c-alien/?disk=MSX2-C.dsk
 
 
-http://msx.tipolisto.es/webmsx/standalone/?disk=files/alien24-2.dsk
-
-http://msx.tipolisto.es/webmsx/standalone/?disk=files/alien24.dsk
 
 <img src=images\3.PNG width=300px />
 <img src=images\3-1.PNG width=300px />
