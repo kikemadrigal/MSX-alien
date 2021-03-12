@@ -46,7 +46,7 @@ FCB TFileTileMap;
 #define numeroColumnas 200
 #define tamanoBufferTileMap 11500 // numeroFilas*numeroColumnas
 unsigned char bufferTileSetYMap[tamanobufferTileSet];
-int contadorColumnaArray;
+unsigned int contadorColumnaArray;
 
 char tile_suelo;
 
@@ -117,11 +117,13 @@ void deRamAVramPage1(void){
   //HMMC transfiere bloques de RAM a VRAM rápidamente en un area rectangular, ver www.tipolisto.es/files/v9938 página 66
   //HMMM(buffer en RAM, posición_x, posición_Y (256 será la page 1), ancho copia, alto copia)
   HMMC(&bufferTileSetYMap[0], 0,256,256,212 ); 
+  //LMMC(&bufferTileSetYMap[0], 0,256,256,212,LOGICAL_TAND); 
 }
 void deRamAVramPage0(void){
   //HMMC transfiere bloques de RAM a VRAM rápidamente en un area rectangular, ver www.tipolisto.es/files/v9938 página 66
   //HMMM(buffer en RAM, posición_x, posición_Y (256 será la page 1), ancho copia, alto copia)
   HMMC(&bufferTileSetYMap[0], 0,0,256,212 ); 
+  //LMMC(&bufferTileSetYMap[0], 0,0,256,212,LOGICAL_TAND); 
 }
 
 
@@ -152,6 +154,7 @@ void recorrerBufferTileMapYPintarPage1EnPage0(){
   
   for (int f=0; f<numeroFilas;f++){
     HMMM(((bufferTileSetYMap[f*numeroColumnas+contadorColumnaArray]-(bufferTileSetYMap[f*numeroColumnas+contadorColumnaArray]/32)*32 ) )*8,(bufferTileSetYMap[f*numeroColumnas+contadorColumnaArray]/32)*8+256, 256-8,8*f,8,8);
+    //LMMM(((bufferTileSetYMap[f*numeroColumnas+contadorColumnaArray]-(bufferTileSetYMap[f*numeroColumnas+contadorColumnaArray]/32)*32 ) )*8,(bufferTileSetYMap[f*numeroColumnas+contadorColumnaArray]/32)*8+256, 256-8,8*f,8,8, LOGICAL_TAND);
   }
   contadorColumnaArray++;
 }

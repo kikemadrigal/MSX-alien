@@ -13,6 +13,7 @@
 #define entity_type_shot         0x10  
 #define entity_type_object_oxigen 0x16  
 #define entity_type_object_batery 0x32  
+#define entity_type_boss         0x64 
 #define entity_type_dead         0x80  
 #define entity_type_default      entity_type_enemy
 
@@ -115,7 +116,7 @@ const TEntity shot_template={
     entity_cmp_movable | entity_cmp_render, //Components 
     0,0,            //x,y  ,20*8 es el suelo, 8*16 plataforma
     0,0,           //old position
-    16,1,             //width, heigh
+    16,16,             //width, heigh
     12,8,                //speed X,speed Y 
     3,                  //direction
     0,                  //is it jumpimg?
@@ -162,7 +163,6 @@ TEntity* sys_entity_create_enemy1(){
     TEntity* enemy=&array_structs_enemies[num_enemies];
     memcpy(enemy,&enemy1_template,sizeof(TEntity));
     ++num_enemies;
-    //enemy->plane=num_enemies*6;
     enemy->plane=num_enemies+enemy1_plane;
     return enemy;
 }  
@@ -176,8 +176,8 @@ TEntity* sys_entity_create_shot(){
 TEntity* sys_entity_create_object(){
     TEntity* object=&array_structs_objects[num_objects];
     memcpy(object,&object_template,sizeof(TEntity));
-    ++num_objects;
     object->plane=num_objects+object1_oxigen_plane;
+    ++num_objects;
     return object;
 }  
 
@@ -194,10 +194,11 @@ void sys_entity_erase_shot(char i){
     array_structs_shots[i]=array_structs_shots[num_shots];
 }
 void sys_entity_erase_object(char i){
-    TEntity *object=&array_structs_objects[i];
     --num_objects;
+    TEntity *object=&array_structs_objects[i];
     PutSprite(object->plane, object_oxigen_pattern, 0,212,0 );
     array_structs_objects[i]=array_structs_objects[num_objects];
+
 }
 //End life cicle
 
@@ -211,6 +212,8 @@ TEntity* sys_entity_get_array_structs_shots(){
 TEntity* sys_entity_get_array_structs_objects(){
     return array_structs_objects;
 }
+
+
 char sys_entity_get_num_enemies(){
     return num_enemies;
 }
@@ -220,6 +223,8 @@ char sys_entity_get_num_shots(){
 char sys_entity_get_num_objects(){
     return num_objects;
 }
+
+
 char sys_entity_get_max_enemies(){
     return MAX_enemies;
 }

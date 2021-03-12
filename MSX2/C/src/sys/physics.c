@@ -1,11 +1,12 @@
 #pragma once
 #include "./src/man/entity.c"
+//para las colisiones
 #include "./src/man/graphics.c"
 #include "./src/sys/anim.c"
-#include "./src/man/game.c"
+//Nevcesitamos llamar al man_game_crear_disparo()
+#include "./src/man/game.h"
 
 //Declarations
-void sys_physics_init();
 void sys_physics_update(TEntity *entity);
 void sys_physics_check_keyboard(TEntity *entity);
 void entity_jump(TEntity *entity);
@@ -16,9 +17,6 @@ void entity_jump(TEntity *entity);
 char contador_jump;
 char array_jump[5];
 //Definitions
-void sys_physics_init(){
-
-}
 void sys_physics_update(TEntity *entity){
     if (entity->type==entity_type_player){
         sys_physics_check_keyboard(entity);
@@ -43,8 +41,7 @@ void sys_physics_update(TEntity *entity){
 
         //Si te caes por un agujero te matas y vuelves
         if(entity->y>180){
-            entity->y=1*8;
-            entity->x=1*8;
+            man_han_matado_al_player();
         }     
     }else if(entity->type==entity_type_shot){
         if (entity->dir==3)entity->x+=entity->vx;
@@ -94,7 +91,7 @@ void sys_physics_check_keyboard(TEntity *entity){
     //Leemos el disparo
     char trigger = TriggerRead(0);
     if (trigger!=0) {
-        man_game_crear_disparo(); 
+        man_game_crear_disparo_player(); 
         Beep();   
     }
 

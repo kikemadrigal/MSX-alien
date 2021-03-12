@@ -1,5 +1,6 @@
 #pragma once
 #include "src/man/entity.c"
+#include "src/man/game.h"
 #include "src/man/sprites.c"
 #include "src/man/graphics.c"
 #include "src/sys/render.c"
@@ -7,46 +8,7 @@
 #include "src/sys/collider.c"
 #include "src/sys/ai.c"
 
-//=================Declarations
-//Functions
-void man_game_init();
-void man_game_play();
-void man_game_update();
-void man_game_desplazar_entidades_a_la_izquierda();
-void man_el_mapa_ha_cambiado();
-void man_game_crear_disparo();
-void man_han_matado_al_player();
-void scoreboard();
-void wait();
-//Members
-TEntity* player;
-TEntity* array_enemies;
-TEntity* array_shots;
-TEntity* array_objects;
-#define numero_mundos 2
-#define enemigos_por_mundo 10  
-//typedef struct TCoordinate TCoordinate;
-//struct TCoordinate{
-//    unsigned char x;
-//    unsigned char y;
-//    unsigned char world;
-//    unsigned char type;
-//};
-//TCoordinate array_structs_objects[10];
-char world_enemies[numero_mundos][enemigos_por_mundo]={
-  {32,35,37,70,80,132,135,137,170,172},
-  {35,45,55,60,65,135,145,155,160,165}
-};
 
-char actual_world;
-
-char world_change;
-char screen;
-char number_shot;
-signed int contador_columna;
-int numero_columnas;
-signed int old_contador_columna;
-//=============End declarations
 
 
 
@@ -58,8 +20,7 @@ void man_game_init(){
   deRamAVramPage0();
   //reservamos 10*21bytes en la RAM para trabajar en ese espacio de memoria
   sys_entities_init();
-  //Inicializamos las colisiones
-  sys_collider_init();
+  sys_ai_init();
   //Tamaño y cosas de MSX para los sprites
   man_sprites_init();
   //Los sprites están definidos en la RAM en unos archivos.c los cargamos en la VRAM
@@ -70,6 +31,11 @@ void man_game_init(){
   deRamAVramPage1();
 
   cargarTileMapEnRAM();
+  //Pantalla de mision
+  Cls();
+  PutText(0,80, "Tienes que recoger las botellas de oxigeno creado en Marte para que tu equipo compruebe si es repirable ",0);
+  WaitKey();
+  //Pintamos el nivel 0
   pintarPantallaInicio();
 
 
@@ -78,42 +44,36 @@ void man_game_init(){
   actual_world=0;
   //Le ponemos que aplique que el mapa ha cambiado para que ponga los objetos y el player
   world_change=1;
-  screen=0;
-  number_shot=0;
   old_contador_columna=0;
-  //memset(array_structs_objects,0,sizeof(array_structs_objects));
+ 
   player=sys_entity_create_player();  
   //El contador de columna se actualizará en el graphics update
-  contador_columna=man_graphics_get_column_counter();
+  //contador_columna=man_graphics_get_column_counter();
   numero_columnas=man_graphics_get_num_columns();
   //Según el mundo que cargemos tendremos unos enemigos y unos objetos que coger
-  man_game_update();
+  //man_game_update();
 
   array_enemies=sys_entity_get_array_structs_enemies();
   array_shots=sys_entity_get_array_structs_shots();
   array_objects=sys_entity_get_array_structs_objects();
-  TEntity *object_oxigen1=sys_entity_create_object();
-  object_oxigen1->y=14*8;
-  object_oxigen1->x=8*8;
-  TEntity *object_batery1=sys_entity_create_object();
-  object_batery1->y=20*8;
-  object_batery1->x=25*8;
-  object_batery1->type=entity_type_object_batery;
-  PutText(150,200,"creado objeto",0);
-  scoreboard();
+
+
+  //scoreboard();
 }
 
 void man_game_play(){
+
   //Game loop
-  while(contador_columna<numero_columnas){
-    sys_physics_update(player);
-    if (player->x/8>14){
-          man_game_desplazar_entidades_a_la_izquierda();
-          recorrerBufferTileMapYPintarPage1EnPage0();
+  while(1){
+    //Pantalla
+    if (player->x/8>14 && man_graphics_get_column_counter()<man_graphics_get_num_columns()-1){
+      man_game_desplazar_entidades_a_la_izquierda();
+      recorrerBufferTileMapYPintarPage1EnPage0();
     }
-    //Dibujamos al player
+    //Player
+    sys_physics_update(player);
     sys_render_update(player);
-    //Dibujamos los enemigos
+    //Enemigos
     for (char i=0;i<sys_entity_get_num_enemies();++i){
         TEntity *enemy=&array_enemies[i];
         sys_physics_update(enemy);
@@ -123,15 +83,16 @@ void man_game_play(){
         }
         //Le aplicamos un comportamiento a los enemigos según el tipo de enemigo que sea
         sys_ai_update(enemy);
-        //Si el enemigo se sale de la pantalla lo matamos
-        if (enemy->x<0) sys_entity_erase_enemy(i);
-        else if (enemy->x>255) sys_entity_erase_enemy(i);
-        else if (enemy->y>180) sys_entity_erase_enemy(i);
         sys_render_update(enemy);
+        //Si el enemigo se sale de la pantalla lo matamos
+        //if (enemy->x<0) sys_entity_erase_enemy(i);
+        //else if (enemy->x>255) sys_entity_erase_enemy(i);
+        if (enemy->y>180) sys_entity_erase_enemy(i);
     }
-    //Dibujamos los objetos
+    //Objetos
     for (char i=0;i<sys_entity_get_num_objects();++i){
       TEntity *object=&array_objects[i];
+      sys_render_update(object);
       if (sys_collider_entity1_collider_entity2(player, object)){
         sys_entity_erase_object(i);
         Beep();
@@ -139,68 +100,103 @@ void man_game_play(){
       //Si el objecto se sale de la pantalla lo matamos
       if (object->x<0) sys_entity_erase_object(i);
       else if (object->y>180) sys_entity_erase_object(i);
-      sys_render_update(object);
     }
-    //Dibujamos los disparos
+    //Disparos
     for (char i=0;i<sys_entity_get_num_shots();++i){
       TEntity *shot=&array_shots[i];
       sys_physics_update(shot);
-      if(sys_collider_collision_enemy_with_shot(shot))Beep;
+      sys_render_update(shot);
+      //if(sys_collider_enemy_with_shot(shot))Beep;
+      for (int w=0; w<sys_entity_get_num_enemies();w++){
+        TEntity *enemy=&array_enemies[i];
+        if (enemy->x < shot->x + 16 &&  enemy->x + 16 > shot->x && enemy->y < shot->y + 16 && 16 + enemy->y > shot->y){
+            sys_entity_erase_enemy(w);
+            sys_entity_erase_shot(i);
+            Beep();
+        }
+      }  
       //Si el objecto se sale de la pantalla lo matamos
       if (shot->x<0) sys_entity_erase_shot(i);
       else if (shot->x>255) sys_entity_erase_shot(i);
       else if (shot->y>180) sys_entity_erase_shot(i);
-      sys_render_update(shot);
     }
+    //Manager del juego
     man_game_update();
+    //Puntuación
     //scoreboard();
+    //Pausa
     wait();
   }
 }
 
 
+
+
+
+
+
 void man_game_update(){
-  //PutText(150,200, Itoa(sys_entity_get_num_objects(),"   ",10),0);
-  //if (world_change==1){
-  //  man_el_mapa_ha_cambiado();
-  //  if(actual_world==0){
-  //    TEntity *object_oxigen1=sys_entity_create_object();
-  //    object_oxigen1->y=16*8;
-  //    object_oxigen1->x=5*8;
-  //    PutText(150,200,"creado objeto",0);
-  //  }
-  //  world_change=0;
-  //} 
-  if(actual_world==0){
-    // {32,35,40,70,80}
-    //el old_contador_columna espara que no se repita si estas en la misma columna
-    if (old_contador_columna!=man_graphics_get_column_counter()){
-      for (int i=0;i<enemigos_por_mundo;i++ ){
-        if ( man_graphics_get_column_counter()==world_enemies[actual_world][i]) {
-          TEntity *enemy=sys_entity_create_enemy1();
-          enemy->y=20*8;
-          enemy->x=248;
-          enemy->dir=7;
-          PutText(150,200, Itoa(world_enemies[actual_world][i],"   ",10),0);
+  //Estos objetos se mstrarán cuando se cargue el mundo
+  if (world_change==1){
+
+    if(actual_world==0){
+      for (int i=0; i<objetos_por_mundo;i++){
+        TCoordinate* coordinate=&world_objects[actual_world][i];
+        if (coordinate->x<32*8){
+          TEntity *object=sys_entity_create_object();
+          object->y=coordinate->y;
+          object->x=coordinate->x;
+          object->type=coordinate->type;
         }
       }
+    }else if(actual_world==1){
 
-      old_contador_columna=man_graphics_get_column_counter();
     }
+    world_change=0;
+  } 
 
+  //Estos objetos se hirán cargando según la pantalla se vaya moviendo
+  //el old_contador_columna es para que no se repita si estas en la misma columna
+  if (old_contador_columna!=man_graphics_get_column_counter()){
+    //Mostramos los enemigos según la posición de la columna
+    for (int i=0;i<enemigos_por_mundo;i++ ){
+      if ( man_graphics_get_column_counter()==world_enemies[actual_world][i]) {
+        TEntity *enemy=sys_entity_create_enemy1();
+        enemy->y=20*8;
+        enemy->x=255;
+        enemy->dir=7;
+      }
+    }
+    //Mostramos los obejtos según la posición de la columna
+    for (int i=0; i<objetos_por_mundo;i++){
+      TCoordinate* coordinate=&world_objects[actual_world][i];
+      if ( man_graphics_get_column_counter()==coordinate->x/8){
+        TEntity *object=sys_entity_create_object();
+        object->y=coordinate->y;
+        object->x=254;
+        object->type=coordinate->type;
+      }
+    }
+    //Creamos el jefe si ha llegado al final de la fase
+    //if (man_graphics_get_column_counter()==man_graphics_get_num_columns()-1) {
+    if (man_graphics_get_column_counter()==man_graphics_get_num_columns()-1) {
+       TEntity *boss=sys_entity_create_enemy1();
+       boss->x=200;
+       boss->y=14*8;
+       boss->type=entity_type_boss;
+     }
+    old_contador_columna=man_graphics_get_column_counter();
   }
 }
 
-void man_el_mapa_ha_cambiado(){
 
-}
 
 void man_game_desplazar_entidades_a_la_izquierda(){
   player->x-=player->vx;
   for (char i=0;i<sys_entity_get_num_enemies();++i){
     TEntity *enemy=&array_enemies[i];
-    if (enemy->type==entity_type_enemy1 && enemy->dir==3) {
-       enemy->x-=enemy->vx*3;
+    if (enemy->type==entity_type_enemy1 && enemy->dir==7) {
+       enemy->x-=enemy->vx*2;
     }
   }
   for (char i=0;i<sys_entity_get_num_objects();++i){
@@ -209,16 +205,26 @@ void man_game_desplazar_entidades_a_la_izquierda(){
   }
 }
 
-void man_game_crear_disparo(){
+void man_game_crear_disparo_player(){
   TEntity *shot=sys_entity_create_shot();
-    shot->x=player->x+8;
-    shot->y=player->y+4;
-    shot->dir=player->dir;
+  shot->x=player->x+8;
+  shot->y=player->y+6;
+  shot->dir=player->dir;
+}
+void man_game_crear_disparo_boss(TEntity *enemy){
+  TEntity *shot=sys_entity_create_shot();
+  shot->x=enemy->x-20;
+  shot->y=enemy->y;
+  shot->dir=7;
+  Beep();
 }
  void man_han_matado_al_player(){
-    player->x=0;
-    player->y=0;
+    player->x=0*8;
+    player->y=0*8;
  }
+char man_game_get_world(){
+    return actual_world;
+}
 
 
 
@@ -227,27 +233,40 @@ void scoreboard(){
     //void BoxFill (int X1, int Y1, int X2, int yY22, char color, char OP )
 
     BoxFill (0, 23*8, 256, 210, 6, LOGICAL_IMP );
-    //TEntity *enemy=&array_enemies[0];
 
-    //PutText(0,190,Itoa(enemy->x,"  ",10),8);
-    //PutText(50,190,Itoa(old_contador_columna,"  ",10),8);
-    //PutText(100,190,Itoa(enemy->vx,"  ",10),8);
-    //PutText(150,190,Itoa(enemy->plane,"  ",10),8);
-    TEntity *shot=&array_shots[0];
-    PutText(0,190,Itoa(shot->x,"  ",10),8);
-    PutText(50,190,Itoa(shot->y,"  ",10),8);
-    PutText(100,190,Itoa(sys_entity_get_num_shots(),"  ",10),8);
+    //PutText(10,190, Itoa(player->x/8,"   ",10),0);
+    //PutText(50,190, Itoa(player->y/8,"   ",10),0);
+    //PutText(100,190, Itoa(man_graphics_get_column_counter(),"   ",10),0);
+    //PutText(150,190, Itoa(man_graphics_get_num_columns(),"   ",10),0);
+
+
+
+    TEntity *enemy=&array_enemies[0];
+    PutText(0,190,Itoa(man_graphics_get_tile_left_array(enemy),"  ",10),8);
+    PutText(50,190,Itoa(man_graphics_get_tile_right_array(enemy),"  ",10),8);
+    PutText(100,190,Itoa(enemy->x,"  ",10),8);
+    PutText(150,190,Itoa(sys_entity_get_num_enemies(),"  ",10),8);
+
+
+
+    //TEntity *shot=&array_shots[0];
+    //PutText(0,190,Itoa(shot->x,"  ",10),8);
+    //PutText(50,190,Itoa(shot->y,"  ",10),8);
+    //PutText(100,190,Itoa(sys_entity_get_num_shots(),"  ",10),8);
     //PutText(150,190,Itoa(object->plane,"  ",10),8);
 
-    //PutText(10,200, Itoa(man_graphics_get_column_counter(),"   ",10),0);
-    //PutText(50,200, Itoa(sys_entity_get_num_enemies(),"   ",10),0);
-    //PutText(100,200, Itoa(player->x/8,"   ",10),0);
-    //PutText(150,200, Itoa(man_graphics_get_num_columns(),"   ",10),0);
-    PutText(10,200, Itoa(get_tile_down_array(player),"   ",10),0);
-    PutText(50,200, Itoa(player->x,"   ",10),0);
-    PutText(100,200, Itoa((player->x)/8,"   ",10),0);
-    
-    
+
+
+
+    //TEntity *object=&array_objects[1];
+    //PutText(0,200,Itoa(object->x/8,"  ",10),8);
+    //PutText(50,200,Itoa(object->y/8,"  ",10),8);
+    //PutText(100,200,Itoa(object->type,"  ",10),8);
+    //PutText(150,200,Itoa(sys_entity_get_num_objects(),"  ",10),8);
+        
+    PutText(0,200,Itoa(man_graphics_get_column_counter(),"  ",10),8);
+
+
 
 }
 
