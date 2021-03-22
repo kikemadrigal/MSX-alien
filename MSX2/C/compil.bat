@@ -13,8 +13,8 @@ SET DEST=dsk\
 SET INCLUDEDIR=fusion-c\include\
 SET LIBDIR=fusion-c\lib\
 
-SET proga=main
-
+SET proga=captain
+SET TARGET_DSK=disco.dsk
 
 rem sjasm (http://www.xl2s.tk/) es un compilador de ensamblador z80 que puedo convertir tu código ensamblador en los archivos binarios.rom y .bin
 rem necesitamos el .bin de la pantalla de carga y del reproductor de música
@@ -82,9 +82,22 @@ del %proga%.rel
 
 echo Done.
 
+
+:create_disk
+start /wait tools/Disk-Manager/DISKMGR.exe -A -F -C %TARGET_DSK% dsk/AUTOEXEC.BAT  
+start /wait tools/Disk-Manager/DISKMGR.exe -A -F -C %TARGET_DSK% dsk/loader.sc5 
+start /wait tools/Disk-Manager/DISKMGR.exe -A -F -C %TARGET_DSK% dsk/TILESET.SC5 
+start /wait tools/Disk-Manager/DISKMGR.exe -A -F -C %TARGET_DSK% dsk/world0.bin
+start /wait tools/Disk-Manager/DISKMGR.exe -A -F -C %TARGET_DSK% dsk/%proga%.com
+start /wait tools/Disk-Manager/DISKMGR.exe -A -F -C %TARGET_DSK% dsk/COMMAND.COM
+start /wait tools/Disk-Manager/DISKMGR.exe -A -F -C %TARGET_DSK% dsk/MSXDOS.SYS
+
+copy /y %TARGET_DSK% .\docs
+
 :Emulator
 rem Set MyProcess=openmsx.exe
 rem tasklist | find /i "%MyProcess%">nul  && (echo %MyProcess% Already running) || start Tools\openMSX\openmsx.exe -script Tools\openMSX\emul_start_config.txt
+
 
 start Tools\openMSX\openmsx.exe -script Tools\openMSX\emul_start_config.txt
 :_end_

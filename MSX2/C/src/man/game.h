@@ -11,6 +11,7 @@ void man_game_crear_disparo_boss(TEntity *enemy);
 void man_han_matado_al_player();
 char man_game_get_world();
 void scoreboard();
+void debug();
 void wait();
 //Members
 TEntity* player;
@@ -24,22 +25,114 @@ unsigned int contador_columna;
 int numero_columnas;
 unsigned int old_contador_columna;
 #define numero_mundos 2
-#define enemigos_por_mundo 10  
-#define objetos_por_mundo 10 
+//#define enemigos_por_mundo 10  
+//#define objetos_por_mundo 10 
 
-char world_enemies[numero_mundos][enemigos_por_mundo]={
-  {32,35,37,38,40,70,131,142,185,186},
-  {32,33,34,60,65,135,145,155,160,171}
-};
-
-typedef struct TCoordinate TCoordinate;
-struct TCoordinate{
+//char world_enemies[numero_mundos][MAX_enemies]={
+//  {32,74,72,73,74,75,131,142,185,186},
+//  {32,33,34,60,65,135,145,155,160,171}
+//};
+typedef struct TCoordinate_enemy TCoordinate_enemy;
+struct TCoordinate_enemy{
     unsigned int x;
     unsigned int y;
     unsigned char type;
 }; 
 
-TCoordinate world_objects[][objetos_por_mundo]={
+
+TCoordinate_enemy world_enemies[][MAX_enemies]={
+    {//wolrd 0
+        { //coordinate_object 0
+          32*8,
+          20*8,
+          entity_type_enemy1
+        },
+        { //coordinate_object 1
+          42*8,
+          20*8,
+          entity_type_enemy1
+        },
+        { //coordinate_object 2
+          65*8,
+          20*8,
+          entity_type_enemy1
+        },
+        { //coordinate_object 3
+          72*8,
+          20*8,
+          entity_type_enemy1
+        },
+        { //coordinate_object 4
+          72*8,
+          17*8,
+          entity_type_enemy1
+        },
+        { //coordinate_object 5
+          77*8,
+          18*8,
+          entity_type_enemy1
+        },
+        { //coordinate_object 6
+          118*8,
+          14*8,
+          entity_type_enemy1
+        },
+        { //coordinate_object 7
+          144*8,
+          20*8,
+          entity_type_enemy1
+        },
+        { //coordinate_object 8
+          160*8,
+          20*8,
+          entity_type_enemy1
+        },
+        { //coordinate_object 9
+          174*8,
+          20*8,
+          entity_type_enemy1
+        }
+  },
+  {//world 1
+    {
+      8*8,
+      20*8,
+      entity_type_enemy1
+    },
+    {
+      5*8,
+      15*8,
+      entity_type_enemy1
+    },
+    {
+      25*8,
+      20*8,
+      entity_type_enemy1
+    },
+    {
+      25*8,
+      20*8,
+      entity_type_enemy1
+    }
+  }
+};
+
+
+
+
+
+
+
+
+
+
+typedef struct TCoordinate_object TCoordinate_object;
+struct TCoordinate_object{
+    unsigned int x;
+    unsigned int y;
+    unsigned char type;
+}; 
+TCoordinate_object world_objects[][MAX_objects]={
     {//wolrd 0
         { //coordinate_object 0
           9*8,

@@ -4,7 +4,7 @@ Eres un mecenas de la tierra y debes de cumplir una serie de misiones para que t
 
 # Play online
 
-https://github.com/kikemadrigal/MSX1-MSX2-assambler-basic-fusion-c-alien/tree/main/MSX2/C/?disk=juego.dsk
+https://github.com/kikemadrigal/captainkik
 
 # Structure
 El juego tiene la siguiente estructura:

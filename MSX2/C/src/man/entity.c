@@ -91,10 +91,25 @@ const TEntity player_template={
     3,                   //direction
     0,                   //is it jumpimg?
     0,                   //is it colliding?
-    player_plane,                   //plano, inutilizado
+    0,                   //plano, inutilizado
     0,                    //Sprite, inutilizado
     10,                  //Color, inutilizado
     100                  //Enenrgy
+};
+const TEntity object_template={
+    entity_type_object_oxigen, // Type1= el enemigo se cae si encuantra un agujero y rebota con bloque sólido
+    entity_cmp_movable | entity_cmp_render, //Components 
+    0,0,            //x,y  ,20*8 es el suelo, 8*16 plataforma
+    0,0,           //old position
+    8,8,             //width, heigh
+    8,8,                //speed X,speed Y 
+    3,                  //direction
+    0,                  //is it jumpimg?
+    0,                  //is it colliding?
+    object1_oxigen_plane, //plano,  inutilizado
+    0,                  //Sprite, inutilizado
+    10,                 //Color, inutilizado
+    100                 //Enenrgy
 };
 const TEntity enemy1_template={
     entity_type_enemy1, // Type1= el enemigo se cae si encuantra un agujero y rebota con bloque sólido
@@ -116,7 +131,7 @@ const TEntity shot_template={
     entity_cmp_movable | entity_cmp_render, //Components 
     0,0,            //x,y  ,20*8 es el suelo, 8*16 plataforma
     0,0,           //old position
-    16,16,             //width, heigh
+    8,8,             //width, heigh
     12,8,                //speed X,speed Y 
     3,                  //direction
     0,                  //is it jumpimg?
@@ -126,21 +141,7 @@ const TEntity shot_template={
     10,                 //Color, inutilizado
     100                 //Enenrgy
 };
-const TEntity object_template={
-    entity_type_object_oxigen, // Type1= el enemigo se cae si encuantra un agujero y rebota con bloque sólido
-    entity_cmp_movable | entity_cmp_render, //Components 
-    0,0,            //x,y  ,20*8 es el suelo, 8*16 plataforma
-    0,0,           //old position
-    8,8,             //width, heigh
-    8,8,                //speed X,speed Y 
-    3,                  //direction
-    0,                  //is it jumpimg?
-    0,                  //is it colliding?
-    object1_oxigen_plane, //plano,  inutilizado
-    0,                  //Sprite, inutilizado
-    10,                 //Color, inutilizado
-    100                 //Enenrgy
-};
+
 
 //Life cicle
 void sys_entities_init(){
@@ -158,26 +159,30 @@ void sys_entities_init(){
 
 TEntity* sys_entity_create_player(){
     return &player_template;
+
 }
 TEntity* sys_entity_create_enemy1(){
     TEntity* enemy=&array_structs_enemies[num_enemies];
     memcpy(enemy,&enemy1_template,sizeof(TEntity));
     ++num_enemies;
-    enemy->plane=num_enemies+enemy1_plane;
+    //enemy->plane=num_enemies*4+enemy1_plane;
+
     return enemy;
 }  
 TEntity* sys_entity_create_shot(){
-    TEntity* shot=&array_structs_shots[num_shots];
+    TEntity* shot=&array_structs_shots[num_shots]; 
     memcpy(shot,&shot_template,sizeof(TEntity));
     ++num_shots;
-    shot->plane=num_objects+shot_plane;
+    //shot->plane=num_objects*4+shot_plane;
+
     return shot;
 }  
 TEntity* sys_entity_create_object(){
     TEntity* object=&array_structs_objects[num_objects];
     memcpy(object,&object_template,sizeof(TEntity));
-    object->plane=num_objects+object1_oxigen_plane;
     ++num_objects;
+    //object->plane=num_objects*4+object1_oxigen_plane;
+
     return object;
 }  
 
@@ -188,8 +193,9 @@ void sys_entity_erase_enemy(char i){
    array_structs_enemies[i]=array_structs_enemies[num_enemies];
 }
 void sys_entity_erase_shot(char i){
-    TEntity *shot=&array_structs_shots[i];
     --num_shots;
+    TEntity *shot=&array_structs_shots[i];
+
     PutSprite(shot->plane, shot_pattern, 0,212,0 );
     array_structs_shots[i]=array_structs_shots[num_shots];
 }

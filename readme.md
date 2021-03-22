@@ -32,7 +32,7 @@ http://msx.tipolisto.es/webmsx/standalone/?disk=files/alien2.dsk
 
 ## 3 C
 
-https://kikemadrigal.github.io/MSX1-MSX2-assambler-basic-fusion-c-alien/?disk=MSX2-C.dsk
+https://github.com/kikemadrigal/captainkik
 
 
 

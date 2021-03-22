@@ -19,6 +19,8 @@ char array_jump[5];
 //Definitions
 void sys_physics_update(TEntity *entity){
     if (entity->type==entity_type_player){
+        //entity->old_x=entity->x;
+        //entity->old_y=entity->y;
         sys_physics_check_keyboard(entity);
         //Sistema de salto 2 parte
         if(entity->jump==1){

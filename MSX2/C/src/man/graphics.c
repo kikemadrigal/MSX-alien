@@ -8,7 +8,8 @@
 void inicializarPantalla();
 //Cargar archivos en memoria RAM y VRAM
 void cargarTileSetEnRAM();
-void cargarTileMapEnRAM();
+//void cargarTileMapEnRAM();
+void cargarTileMapEnRAM(char* map);
 //Esto es para asociar un archivo al struct de archivos
 void FT_SetName( FCB *p_fcb, const char *p_name );
 //Esto me lo he inventado, :)
@@ -28,6 +29,8 @@ char man_graphics_get_tile_suelo();
 int man_graphics_get_tile_left_array(TEntity *entity);
 int man_graphics_get_tile_right_array(TEntity *entity);
 int get_tile_down_array(TEntity *entity);
+int get_tile_down_right_array(TEntity *entity);
+int get_tile_down_left_array(TEntity *entity);
 
 int man_graphics_get_column_entity(TEntity *entity);
 //int get_tile_right_entity(TEntity *entity);
@@ -36,7 +39,7 @@ int get_fila_entity(TEntity *entity);
 //VARIABLES Y ARRAYS
 char fileNameLoader[]="loader.sc5";
 char fileNameTilseSet[]="tileset.sc5";
-char fileNameTileMap[]="world0.bin";
+//char fileNameTileMap1[]="world0.bin";
 FCB TFileTileSet;
 FCB TFileTileMap;
 //En screen5 cada byte define 2 colores, entonces 256px de ancho/2=128 bytes*212 filas=27136 bytes para definir una page
@@ -105,8 +108,9 @@ void cargarTileSetEnRAM(){
     fcb_read( &TFileTileMap, &bufferTileMap[0], tamanoBufferTileMap );  // Read 20 lines of image data (128bytes per line in screen5)
     fcb_close( &TFileTileMap);
 }*/
-void cargarTileMapEnRAM(){
-    FT_SetName( &TFileTileMap, &fileNameTileMap[0] );
+void cargarTileMapEnRAM(char* map){
+    //FT_SetName( &TFileTileMap, &fileNameTileMap1[0] );
+    FT_SetName( &TFileTileMap, map );
     fcb_open( &TFileTileMap );
     //Analizando el archivo word0.bin con un editor hexadecimal vemos que hay que saltar 8 bytes que definen al .bin
     fcb_read( &TFileTileMap, &bufferTileSetYMap[0], 8 );  // Skip 7 first bytes of the file  
@@ -230,4 +234,11 @@ int get_tile_down_array(TEntity *entity){
   int tile_abajo=bufferTileSetYMap[((get_fila_entity(entity)+2)*numeroColumnas)+(man_graphics_get_column_entity(entity)+1)];
   return tile_abajo;
 }
-
+int get_tile_down_right_array(TEntity *entity){
+  int tile_abajo=bufferTileSetYMap[((get_fila_entity(entity)+2)*numeroColumnas)+(man_graphics_get_column_entity(entity))];
+  return tile_abajo;
+}
+int get_tile_down_left_array(TEntity *entity){
+  int tile_abajo=bufferTileSetYMap[((get_fila_entity(entity)+2)*numeroColumnas)+(man_graphics_get_column_entity(entity)+2)];
+  return tile_abajo;
+}
