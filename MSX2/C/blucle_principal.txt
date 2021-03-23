@@ -1,5 +1,0 @@
-1. Iniciañizanción de las varoables globales
-2. Inicializacion del audio y efectos
-3.Inicialización de la pantalla
-4. Inicialización de los sprites
-5 bucle principal

@@ -94,7 +94,7 @@ void sys_physics_check_keyboard(TEntity *entity){
     char trigger = TriggerRead(0);
     if (trigger!=0) {
         man_game_crear_disparo_player(); 
-        Beep();   
+        man_game_reproducir_efecto_sonido(1);   
     }
 
 

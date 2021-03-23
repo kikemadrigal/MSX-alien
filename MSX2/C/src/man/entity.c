@@ -116,7 +116,7 @@ const TEntity enemy1_template={
     entity_cmp_movable | entity_cmp_render, //Components 
     0,0,            //x,y  ,20*8 es el suelo, 8*16 plataforma
     0,0,           //old position
-    16,16,             //width, heigh
+    8,8,             //width, heigh
     8,8,                //speed X,speed Y 
     3,                  //direction
     0,                  //is it jumpimg?
@@ -132,7 +132,7 @@ const TEntity shot_template={
     0,0,            //x,y  ,20*8 es el suelo, 8*16 plataforma
     0,0,           //old position
     8,8,             //width, heigh
-    12,8,                //speed X,speed Y 
+    8,8,                //speed X,speed Y 
     3,                  //direction
     0,                  //is it jumpimg?
     0,                  //is it colliding?
@@ -187,25 +187,26 @@ TEntity* sys_entity_create_object(){
 }  
 
 void sys_entity_erase_enemy(char i){
-    TEntity *enemy=&array_structs_enemies[i];
-    --num_enemies;
+   --num_enemies;
+   TEntity *enemy=&array_structs_enemies[i];
    PutSprite(enemy->plane , player_Jump_left_pattern, 0,212,0 );
-   array_structs_enemies[i]=array_structs_enemies[num_enemies];
+   //array_structs_enemies[i]=array_structs_enemies[num_enemies];
+   memcpy(&array_structs_enemies[i],&array_structs_enemies[num_enemies],sizeof(TEntity));
 }
 void sys_entity_erase_shot(char i){
     --num_shots;
     TEntity *shot=&array_structs_shots[i];
-
     PutSprite(shot->plane, shot_pattern, 0,212,0 );
-    array_structs_shots[i]=array_structs_shots[num_shots];
+    //array_structs_shots[i]=array_structs_shots[num_shots];
+    memcpy(&array_structs_shots[i],&array_structs_shots[num_shots],sizeof(TEntity));
 }
 void sys_entity_erase_object(char i){
     --num_objects;
     TEntity *object=&array_structs_objects[i];
     PutSprite(object->plane, object_oxigen_pattern, 0,212,0 );
-    array_structs_objects[i]=array_structs_objects[num_objects];
-
-}
+    //array_structs_objects[i]=array_structs_objects[num_objects];
+    memcpy(&array_structs_objects[i],&array_structs_objects[num_objects],sizeof(TEntity));
+}  
 //End life cicle
 
 //Geters & setters

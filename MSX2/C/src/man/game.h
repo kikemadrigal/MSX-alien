@@ -1,5 +1,6 @@
 #pragma once
 #include "src/man/entity.c"
+
 //=================Declarations
 //Functions
 void man_game_init();
@@ -13,7 +14,21 @@ char man_game_get_world();
 void scoreboard();
 void debug();
 void wait();
+void cargarBufferDeMusica();
+void cargarBufferDeEfectosDeSonido();
+void man_game_reproducir_efecto_sonido(char efecto);
 //Members
+//Music
+#define SONG_BUFFER_TAM 264
+unsigned char songBuffer[SONG_BUFFER_TAM];  
+char fileNameSong[]={"song1.pt3"};
+FCB TFileMusic;
+//Efectos
+#define SONG_EFFECT_TAM 1207
+//unsigned char songEffectsBuffer[SONG_EFFECT_TAM]; 
+//char fileNameSongEffects[]={"effects.afb"};
+FCB TFileEffects; 
+
 TEntity* player;
 TEntity* array_enemies;
 TEntity* array_shots;

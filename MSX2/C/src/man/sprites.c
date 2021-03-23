@@ -42,7 +42,7 @@
   #define player_plane 0
   #define enemy1_plane 5
   ////#define enemy2_plane 6*2
-  #define object1_oxigen_plane 10
+  #define object1_oxigen_plane 15
   ////#define object2_plane_plane 6*4
   #define shot_plane 22
 
