@@ -19,7 +19,7 @@ http://msx.tipolisto.es/webmsx/standalone/?disk=files/alien.dsk
 
 ## 2.1. Basic
 
-https://kikemadrigal.github.io/MSX1-MSX2-assambler-basic-fusion-c-alien/?disk=MSX2-basic
+https://kikemadrigal.github.io/MSX1-MSX2-assambler-basic-fusion-c-alien/?disk=MSX2-basic.dsk
 
 
 
