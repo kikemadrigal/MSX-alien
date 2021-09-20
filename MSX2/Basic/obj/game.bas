@@ -71,10 +71,11 @@
 9210fori=1toen
 9220ex(i)=ex(i)+ev(i)
 9230ifex(i)mod5=0thenev(i)=-ev(i)
+9235ifev(i)>0thenes(i)=es(i)+1elsees(i)=es
 9240putspriteep(i),(ex(i),ey(i)),ec(i),es(i)
 9250ifpx<ex(i)+16andpx+16>ex(i)andpy<ey(i)+16and16+py>ey(i)thengosub10400
 9260forw=1todn
-9270ifdx(w)<ex(i)+16anddx(w)+15>ex(i)anddy(w)<ey(i)+16and2+dy(w)>ey(i)thened=i:gosub12600:dd=w:gosub11600
+9270ifdx(w)<ex(i)+16anddx(w)+dw>ex(i)anddy(w)<ey(i)+16anddy(w)+dh>ey(i)thened=i:gosub12600:dd=w:gosub11600
 9280nextw
 9290nexti
 9990return
@@ -100,7 +101,7 @@
 10500beep:'re=5:gosub4300
 10510gosub11500
 10590return
-11000dm=3:dn=0:dd=0:ds=6:dc=6:dp=0
+11000dm=3:dn=0:dd=0:ds=6:dc=6:dp=0:dw=8:dh=2
 11010DIMdx(dm),dy(dm),dv(dm),dp(dm)
 11060return
 11500ifdn>=dmthenreturnelsedn=dn+1
@@ -169,7 +170,7 @@
 13602_turboon(m(),mc)
 13603fori=0+msto32+ms
 13605mc=mc+1
-13610copy(8,0)-(256,212),0to(0,0),0,pset
+13610copy(8,0)-(256,184),0to(0,0),0,pset
 13620forf=3to23-1
 13630tn=m(31+mc,f)
 13640iftn>=0andtn<32thencopy(tn*8,0*8)-((tn*8)+8,(0*8)+8),1to(31*8,f*8),0

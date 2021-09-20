@@ -186,9 +186,9 @@
 
 8290 return
 
-1 ' ----------------------'
-1 '     RENDER SYSTEM & COLLISION'9000-9999
-1 ' ----------------------'
+1 ' --------------------------------------------'
+1 '         RENDER SYSTEM & COLLISION
+1 ' --------------------------------------------'
     1 'Player'
     9000 if pd=3 or pd=1 or pd=2 then put sprite 0,(px,py),,p1 
     9020 if pd=7 then put sprite 0,(px,py),,p3
@@ -202,14 +202,15 @@
     9210 for i=1 to en
         9220 ex(i)=ex(i)+ev(i)  
         1 'Si recorre 20 pasos le cambiamos la velocidad'
-        9230 if ex(i) mod 5=0 then ev(i)=-ev(i)       
-        9240 put sprite ep(i),(ex(i),ey(i)),ec(i),es(i)
+        9230 if ex(i) mod 5=0 then ev(i)=-ev(i)
+        9235 if ev(i)>0 then es(i)=es(i)+1 else es(i)=es        
+        9240 put sprite ep(i),(ex(i),ey(i)),ec(i),es(i) 
         1 'Colisión del enemigo con el player'
         9250 if px < ex(i) + 16 and  px + 16 > ex(i) and py < ey(i) + 16 and 16 + py > ey(i) then gosub 10400
         1 'Colision del enemigo con un disparo'
         9260 for w=1 to dn
             1 '15 es el ancho del disparo, 16 es el ancho y el alto del enemigo, 2 es el alto del disparo'
-            9270 if dx(w) < ex(i) + 16 and  dx(w) + 15 > ex(i) and dy(w) < ey(i) + 16 and 2 + dy(w) > ey(i) then ed=i:gosub 12600:dd=w:gosub 11600
+            9270 if dx(w) < ex(i) + 16 and  dx(w) + dw > ex(i) and dy(w) < ey(i) + 16 and dy(w) + dh > ey(i) then ed=i:gosub 12600:dd=w:gosub 11600
         9280 next w
     9290 next i
 9990 return
@@ -217,9 +218,6 @@
 
 
 
-1 ' ----------------------'
-1 '     COLLIDER SYSTEM
-1 ' ----------------------'
 
 
 
@@ -438,8 +436,10 @@
 1 'dd= disparo destruido, variable utilizada para eliminar disparo (ver linea 11600 y 11690)'
 1 'ds= disparo sprite'
 1 'dc= disparo color'
-1 'dp= valor de inicio en el plano para los disparos, como queremos que comience en el plano 0 le ponemos un 0'
-    11000 dm=3:dn=0:dd=0:ds=6:dc=6:dp=0
+1 'dp= valor de inicio en el plano para los disparos, como queremos que comience en el plano 1 le ponemos un 0, el plano 0 es el del player'
+1 'dw=disparo ancho'
+1 'dh=dispar alto'
+    11000 dm=3:dn=0:dd=0:ds=6:dc=6:dp=0:dw=8:dh=2
     1 'dx= coordenada disparo x'
     1 'dy= coordenada disapro y'
     1 'dv= velocidad disapro horizintal'
@@ -587,7 +587,7 @@
     1 'Repetimos la copia del ultimo tile y desplazamiento de la pantalla 32 veces'
     13603 for i=0+ms to 32+ms
         13605 mc=mc+1
-        13610 copy (8,0)-(256,212),0 to (0,0),0,pset  
+        13610 copy (8,0)-(256,184),0 to (0,0),0,pset  
         13620 for f=3 to 23-1 
             13630 tn=m(31+mc,f)
             13640 if tn >=0 and tn <32 then copy (tn*8,0*8)-((tn*8)+8,(0*8)+8),1 to (31*8,f*8),0
