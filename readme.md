@@ -38,10 +38,20 @@ https://kikemadrigal.github.io/MSX1-MSX2-assambler-basic-fusion-c-alien/?disk=MS
 <img src=docs/MSX2/sprite5.PNG width=50 align="left"  />
 <img src=docs/MSX2/sprite6.PNG width=50 align="left"  />
 <BR clear="left">
+<img src=docs/MSX2/sprite7.PNG width=50 align="left"  />
+<img src=docs/MSX2/sprite8.PNG width=50 align="left"  />
+<img src=docs/MSX2/sprite9.PNG width=50 align="left"  />
+<img src=docs/MSX2/sprite10.PNG width=50 align="left"  />
+<img src=docs/MSX2/sprite11.PNG width=50 align="left"  />
+<img src=docs/MSX2/sprite12.PNG width=50 align="left"  />
+<img src=docs/MSX2/sprite13.PNG width=50 align="left"  />
+<BR clear="left">
 
-##ASM
 
 
+## ASM
+
+Nada en ASM
 
 
 ## 3 C
