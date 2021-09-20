@@ -1,8 +1,10 @@
 
 1 '0-1000: inicialización
-1 '2000-2900: game loop'
-1  ' ' 
-
+1 '1000-1100: game loop'
+1 '2000-3999 input system ' 
+1 '4000-4999 Physics system'
+1 '5000-5999 Render system & collision'
+1 '6000-6090 HUD / Score board'
 10 defint a-z
 1 'Inicilizamos dispositivo: 003B, inicilizamos teclado: 003E, incializamos y preparamos el sonido:&H90'
 20 defusr=&h003B:a=usr(0):defusr1=&h003E:a=usr1(0):defusr2=&H90:a=usr2(0)
@@ -25,10 +27,8 @@
 550 gosub 14000
 1 'Copiando mundo en page 0'
 560 gosub 13300
-1 'Inicializamos las variables globales del juego, gravedad mf(mapa fase), mu(mapa update), los tiles que son suelo, bloques'
-570 gosub 10100
 1 'Mostrar scoreboard'
-580 gosub 10000
+580 gosub 6000
 
 
  
@@ -38,47 +38,23 @@
 1 ' ----------------------' 
     1 'bluce principal'
     1 'Capturamos las teclas'
-    2000 gosub 6000
+    1000 gosub 2000
     1 'Chequeamos la física'
-    2020 gosub 8000
+    1020 gosub 4000
     1 'render'
-    2040 gosub 9000
-    1 'Chekeamos el cambio de mapa y mundo'
-    2050 gosub 10140
+    1040 gosub 5000
+    1050 if pv<=0 then gosub 1100: goto 130
     1 'Debug'
-    2060 'gosub 3000
-2090 goto 2000
+    1060 'gosub 6100
+1090 goto 1000
 1 ' ----------------------'
 1 '    FINAL MAIN LOOP
 1 ' ----------------------'
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-1 '3000 preset (10,30):  print #1,"dn "dn" dm "dm
-1 '3005 for i=1 to dn
-1 '    3010 preset (10,40+(i*8)):print #1,"dx "dx(i)" dy "dy(i)" dp "dp(i)
-1 '3020 next i
-1 '3000 preset (10,100):  print #1,"en "en" em "em
-1 '3035 for i=1 to en
-1 '    3040 preset (10,100+(i*8)):print #1,i "x "ex(i)" y "ey(i)" ep "ep(i)" es "es(i)
-1 '3050 next i
-3000 preset (10,30):  print #1,"p1 "p1" t0 "t0
-3090 return
-
-
-
+1100 erase ex,ey,ev,el,es,ep,ec,ee
+1110 erase dx,dy,dv,dp
+1120 erase m
+1130 return
 
 
 
@@ -88,56 +64,56 @@
 1 ' ----------------------------------------------------------------------------------------'
 
 1 ' ----------------------'
-1 '     INPUT SYSTEM'6000-7999
+1 '     INPUT SYSTEM
 1 ' ----------------------'
 1 '2 Sistema de input'
     1 'Nos guardamos las posiciones del player antes de cambiarlas'
-    6000 on stick(0) gosub 6200,6400,6600,6800,7000,7200,7400,7600
-6190 return
+    2000 on stick(0) gosub 2200,2400,2600,2800,3000,3200,3400,3600
+2190 return
 1 '1 Arriba'
     1 'Saltamos y reproducimos un sonido'
-    6200 if pa<>1 then po=py:pa=1
-6290 return
+    2200 if pa<>1 then po=py:pa=1
+2290 return
 1 '2-saltando-derecha'
-    6400 if pa<>1 then po=py:pa=1
-    6410 px=px+pv
+    2400 if pa<>1 then po=py:pa=1
+    2410 px=px+pv
     1 'Ponemos que el layer va en dirección derecha'
-    6430 swap p1,p2
-6490 return
+    2430 swap p1,p2
+2490 return
 1 '3 derecha'
-    6600 px=px+pv
-    6610 pd=3
-    6630 swap p1,p2
-6690 return
+    2600 px=px+pv
+    2610 pd=3
+    2630 swap p1,p2
+2690 return
 1 '4-abajo derecha'
-    6800 'nada'
-6890 return
+     2800 'nada'
+2890 return
 1 '5 abajo'
-    7000 'nada'
-7090 return
-1 '6-abajo-izquierda'
-    7200 'nada'
-7290 return
+    3000 'nada'
+3090 return
+1 '1 '6-abajo-izquierda'
+    3200 'nada'
+3290 return
 1 '7 izquierda'
-    7400 px=px-pv
-    7410 pd=7
-    7440 swap p3,p4
-7490 return
+    3400 px=px-pv
+    3410 pd=7
+    3440 swap p3,p4
+3490 return
 1 '8 salktando izquierda'
-    7600 if pa<>1 then po=py:pa=1
-    7610 px=px-pv
-    7630 swap p3,p4
-7690 return
+    3600 if pa<>1 then po=py:pa=1
+    3610 px=px-pv
+    3630 swap p3,p4
+3690 return
 
 
 
 1 ' ----------------------'
-1 '    Physics system'8000-8999
+1 '    Physics system
 1 ' ----------------------'
 1'chequeando contorno sprite personaje
-    8000 'Player'
+    4000 'Player'
     1 'Chekeo de llegar al final del mundo, mc=mapa contador'
-    8010 if mc>=200-32 then print #1,"!FINAL": return
+    4010 if mc>=200-32 then print #1,"!FINAL": return
     1 'Chequeo final del screen
     1 'sacamos al personaje de la pantalla 10300, 
     1 'lo pintamos 
@@ -146,114 +122,105 @@
     1 'eliminamos todos los enemigos 12700
     1 'aumentamos el contador de pantalla y actualizamos para que pinte los enemigos y los objetos 13800'
     1 'Pintamos el marcador'
-    8040 if px>255 then put sprite 0,(0,212),,p1: gosub 13600:py=18*8:px=0:gosub 12700:ms=ms+1:gosub 13800:gosub 10000
+    4040 if px>255 then put sprite 0,(0,212),,p1: gosub 13600:py=18*8:px=0:gosub 12700:ms=ms+1:gosub 13800:gosub 6000
     1 'Chekeo pantalla'
-    8020 if px<0 then px=0
+    4020 if px<0 then px=0
     1 'Si la posición y es mayor que 180 es que te has caido y vuelves a empezar'
-    8030 if py>180 then goto 10400
+    4030 if py>180 then goto 10400
 
 
     1 'Obtenemos el tile actual del player' 
-    8050 tx=px/8+mc:ty=py/8:if px <=0 then tx = 0:if py<=0 then ty=0 
+    4050 tx=px/8+mc:ty=py/8:if px <=0 then tx = 0:if py<=0 then ty=0 
     1 'Colision bloque derecha
     1 'tf=tile floor, o tile suelo o sólido, a partir de las posición 160 empiezan a definirse los tiles que no se pueden pasar'
-    8055 t0=m(tx,ty+1)
+    4055 t0=m(tx,ty+1)
     1 'Si el tile 0 es un objeto collectable:
     1 'Metemos en el array el tile del fondo del mundo por defecto (linea 20000)'
-    1 ' pintamos el tile world definido en el mundo (línea 20000)
+    1 'pintamos 2 veces (para cubrir el bloque antiguo) el tile world definido en el mundo (línea 20000)
     1 'restamos 1 a os que faltan por coger'
-    1 'Pintamos el HUD'
-    8056 if t0<26 then m(tx,ty+1)=tw:copy ((tw-64)*8,2*8)-(((tw-64)*8)+8,(2*8)+8),1 to (px-4,py+8),0: wc=wc-1:gosub 10000
-    
-    8060 t3=m(tx+1,ty+1)
+    1 'Pintamos el HUD 6000'
+    1 'hacemos un sonido'
+    4056 if t0<26 then m(tx,ty+1)=tw:copy ((tw-64)*8,2*8)-(((tw-64)*8)+7,(2*8)+7),1 to (px-4,py+8),0:copy ((tw-64)*8,2*8)-(((tw-64)*8)+7,(2*8)+7),1 to (px,py+8),0: wc=wc-1:gosub 6000:re=6:gosub 7000
+    1 '4056 if t0<26 then m(tx,ty+1)=tw:copy ((tw-64)*8,2*8)-(((tw-64)*8)+7,(2*8)+7),1 to (0,0),0: wc=wc-1
+    1 'Si es un bloque de muerte'
+    4057 if t0=td then gosub 10400
+    4060 t3=m(tx+1,ty+1)
     1 'Tile de abajo' 
-    8070 t5=m(tx,ty+2)
+    4070 t5=m(tx,ty+2)
     1 'tile de la izquierda'
-    8080 t7=m(tx,ty+1) 
+    4080 t7=m(tx,ty+1) 
     1 'Si el tile de la derecha es mayor que 192' 
-    8090 if t3>=tf and pa=0 then px=px-pv else if t7>=tf and pa=0 then px=px+pv
+    4090 if t3>=tf and pa=0 then px=px-pv else if t7>=tf and pa=0 then px=px+pv
     1 ' Control del salto'
     1' Si el tile del suelo es mayor que el del suelo guardado y estamos cayendo reiniciamos
-    8110 if pa=1 and t5>=tf and pl<0 then pa=0:pl=-pl
-    8120 if pa=1 then py=py-pl 
-    8130 if pa=1 and py<po-16 then pl=-pl
-    8140 if pa=1 and py>po then py=po:pl=-pl:pa=0
+    4110 if pa=1 and t5>=tf and pl<0 then pa=0:pl=-pl
+    4120 if pa=1 then py=py-pl 
+    4130 if pa=1 and py<po-16 then pl=-pl
+    4140 if pa=1 and py>po then py=po:pl=-pl:pa=0
 
     1 'Sin saltar '
     1 'Gravedad: si el tile de debajo es menor que el definido de tipo suelo le sumamos la velocidad y'
     1 'Asi solo parará de bajar al player cuando p5 sea mayor 160'
-    8150 if pa=0 and t5<tf then py=py+pl
+    4150 if pa=0 and t5<tf then py=py+pl
 
-8290 return
+4290 return
 
 1 ' --------------------------------------------'
 1 '         RENDER SYSTEM & COLLISION
 1 ' --------------------------------------------'
     1 'Player'
-    9000 if pd=3 or pd=1 or pd=2 then put sprite 0,(px,py),,p1 
-    9020 if pd=7 then put sprite 0,(px,py),,p3
+    5000 if pd=3 or pd=1 or pd=2 then put sprite 0,(px,py),,p1 
+    5020 if pd=7 then put sprite 0,(px,py),,p3
 
 
     1 'Shots'
-    9100 gosub 11700
+    5100 gosub 11700
 
     1 'Enemies'
-    9200 if en<=0 then return 
-    9210 for i=1 to en
-        9220 ex(i)=ex(i)+ev(i)  
+    5200 if en<=0 then return 
+    5210 for i=1 to en
+        5220 ex(i)=ex(i)+ev(i)  
         1 'Si recorre 20 pasos le cambiamos la velocidad'
-        9230 if ex(i) mod 5=0 then ev(i)=-ev(i)
-        9235 if ev(i)>0 then es(i)=es(i)+1 else es(i)=es        
-        9240 put sprite ep(i),(ex(i),ey(i)),ec(i),es(i) 
+        5230 if ex(i) mod 5=0 then ev(i)=-ev(i)
+        1 ' si está moviendose hacia la izquierda le ponemos 2 sprites más'
+       
+        5240 if es(i)>=7 or es(i)<=9 then if ev(i)>0 then es(i)=7 else es(i)=9   
+        5250 if es(i)>=11 or es(i)<=13 then if ev(i)>0 then es(i)=11 else es(i)=13  
+        1 '5255 ec(i)=ec(i)+1:if ec(i)>1 then ec(i)=0
+        1 '5256 if ec(i) mod 2=0 and es(i)=7 then es(i)=7 else es(i)=8
+        1 '5257 if ec(i) mod 2=0 and es(i)=9 then es(i)=9 else es(i)=10
+        1 'Esto es necesario para poder hacer la animación'
+
+        5260 put sprite ep(i),(ex(i),ey(i)),,es(i)
+
         1 'Colisión del enemigo con el player'
-        9250 if px < ex(i) + 16 and  px + 16 > ex(i) and py < ey(i) + 16 and 16 + py > ey(i) then gosub 10400
+        5270 if px < ex(i) + 16 and  px + 16 > ex(i) and py < ey(i) + 16 and 16 + py > ey(i) then gosub 10400
         1 'Colision del enemigo con un disparo'
-        9260 for w=1 to dn
-            1 '15 es el ancho del disparo, 16 es el ancho y el alto del enemigo, 2 es el alto del disparo'
-            9270 if dx(w) < ex(i) + 16 and  dx(w) + dw > ex(i) and dy(w) < ey(i) + 16 and dy(w) + dh > ey(i) then ed=i:gosub 12600:dd=w:gosub 11600
-        9280 next w
-    9290 next i
-9990 return
-
-
-
-
-
-
+        5280 for w=1 to dn
+            1 'Si hay colisión con el disparo eliminamos el disparo y el enemigo y hacemos un sonido'
+            5290 if dx(w) < ex(i) + 16 and  dx(w) + dw > ex(i) and dy(w) < ey(i) + 16 and dy(w) + dh > ey(i) then ed=i:gosub 12600:dd=w:gosub 11600:re=7:gosub 7000
+        5300 next w
+    5310 next i
+5990 return
 
 
 
 1 ' ----------------------'
-1 '     HUD'10000-10999
+1 '    HUD/Score board
 1 ' ----------------------'
-    10000 line (0,184)-(256,212),1,bf 
-    10010 preset (10,190):print #1,"!Capturas que faltan: "wc
-    10020 preset (10,200):print #1,"Vidas: "pv" Level: "mu"-"ms
-    10030 'preset (10,208):print #1,"libre: "fre(0)
-10090 return
+    6000 line (0,184)-(256,212),1,bf 
+    6010 preset (10,190):print #1,"!Capturas que faltan: "wc
+    6020 preset (10,200):print #1,"Vidas: "pv" Level: "mu"-"ms
+    6030 'preset (10,208):print #1,"libre: "fre(0)
+6090 return
 
-
-
-
+1 'Debug'
+    6100 preset (10,40):print #1,"ev "ev(1)" es "es(1)
+6110 return
 
 1 ' ----------------------------------------------------------------------------------------'
 1 '                                    END SYSTEMS
 1 ' ----------------------------------------------------------------------------------------'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -271,48 +238,25 @@
 
 
 1 ' ----------------------'
-1 '    Game manager'
-1 ' ----------------------'
-1'game init
-    1 'Fuerza de la gravedad'
-    10100 wg=8:j=0
-    1 'Tiles'
-    1 'tf=tile floor, tile suelo, corresponde al tile 160 hasta el 160+32'
-    1 'te=tile end, determina el final del mundo'
-    1 'tc=tile collectable, los que se pueden recoger'
-    1 'tw=tile world el tile que se tiene que pintar cuando se recoja un collectable
-    1 '10110 tf=160:te=26
-10120 return
-
-1 'Game update'
-    1 'Si el player ha llegado al borde derecho de la pantalla el mapa debe de actualizarse, tiene ma=1'
-    10140 'if mu=1 then 
-10150 return
-
-
-
-
-
-
-
-1 ' ----------------------'
 1 '    Sound manager'
 1 ' ----------------------'
 1 'Reproductor de efectos d sonido'
-    1 '4300 a=usr2(0)
-    1 '4310 if re=1 then PLAY"O5 L8 V4 M8000 A A D F G2 A A A A r60 G E F D C D G R8 A2 A2 A8","o1 v4 c r8 o2 c r8 o1 v6 c r8 o2 v4 c r8 o1 c r8 o2 v6 c r8"
-    1 '1 'Tirando el paquete'
-    1 '4350 if re=5 then play "l10 o4 v4 g c"
-    1 '1 'Paquete cogido'
-    1 '4360 if re=6 then play"t250 o5 v12 d v9 e" 
-    1 '1 'Pitido normal'
-    1 '4370 if re=7 then play "O5 L8 V4 M8000 A A D F G2 A A A A"
-    1 '1 'Toque fino'
-    1 '4380 if re=8 then PLAY"S1M2000T150O7C32"
-    1 '1 'Pasos'
-    1 '4390 if re=9 then PLAY"o2 l64 t255 v10 m6500 c"
-    1 '4400 if re=10 then sound 6,5:sound 8,16:sound 12,6:sound 13,9
-1 '4420 return
+    7000 a=usr2(0)
+    7010 if re=1 then PLAY"O5 L8 V4 M8000 A A D F G2 A A A A r60 G E F D C D G R8 A2 A2 A8","o1 v4 c r8 o2 c r8 o1 v6 c r8 o2 v4 c r8 o1 c r8 o2 v6 c r8"
+    1 'Tirando el paquete'
+    7050 if re=5 then play "l10 o4 a"
+    7051 if re=6 then play "t110 o4 d"
+    7052 if re=7 then play "l10 o4 f f"
+    1 'Paquete cogido'
+    7060 if re=16 then play"t250 o5 v12 d v9 e" 
+    1 'Pitido normal'
+    7070 if re=17 then play "O5 L8 V4 M8000 A A D F G2 A A A A"
+    1 'Toque fino'
+    7080 if re=18 then PLAY"S1M2000T150O7C32"
+    1 'Pasos'
+    7090 if re=19 then PLAY"o2 l64 t255 v10 m6500 c"
+    7100 if re=20 then sound 6,5:sound 8,16:sound 12,6:sound 13,9
+7190 return
 
 
 
@@ -376,9 +320,9 @@
     1 'pj=distancia que recorre cuando el salto está activado'
     1 'pd=player dirección'
     1 'Variables player para la física'
-    10200 px=16:py=13*8:pw=16:ph=16:pv=4:pl=8:pj=0:pa=0:dim j(7):po=0:pd=3
+    10200 px=16:py=13*8:pw=16:ph=16:pv=4:pl=8:pj=0:pa=0:pd=3'dim j(7):po=0:pd=3
     1 'Array de salto'
-    10210 j(0)=-8:j(1)=-8:j(2)=-8:j(3)=0:j(4)=8:j(5)=8:j(6)=8
+    10210 'j(0)=-8:j(1)=-8:j(2)=-8:j(3)=0:j(4)=8:j(5)=8:j(6)=8
     1 'variables player para detectar colisiones
     10220 t1=0:t3=0:t5=0:t7=0
     1 'Apartir del 5 sprite es la izquierda'
@@ -400,12 +344,16 @@
 
 1 'Rutina player muere'
     10400 py=18*8:px=0
-    10410 'restar 1 vida'
+    10410 pv=pv-1
+    1 'Pintamos el HUD'
+    10420 gosub 6000
+    1 'Hacemos un sonido'
+    10430 re=6: gosub 7000
 10490 return
 
 1 ' Rutina barra espaciadora pulsada'
     1 'Ponemos un sonido de disparo'
-    10500 beep: 're=5: gosub 4300
+    10500 re=5: gosub 7000
     1 'Creamos el disparo en la posición del player
     10510 gosub 11500
 10590 return
@@ -489,16 +437,17 @@
     1 'em=enemigos maximos,reservamos el espacio en RAM para 3 enemigos''
     1 'en=enemigo numero, variable utilizar para gestionar la creación y destrucción de enemigos'
     1 'es =variable utilizada para hacer la animación del enemigo'
-    12000 em=3:en=0:es=11
+    12000 em=3:en=0:es=7
     1 'Componente de posicion'
     1 'ex()=coordenada x, ey=coordenada y', e1=coordenada previa x, e2=coordenada previa y
     1 'Componente de fisica'
     1 'ev()=velocidad enemigo eje x, el=velocidad eje y'
     1 'Componente de render'
-    1 'es()=enemigo sprite, ep()=enemigo plano'
+    1 'es()=enemigo sprite, puede ser el normal que es el 7,8,9,10, el palo 11 y 12
+    1 'ep()=enemigo plano'
     1 'Componente RPG'
     1 'ee()=enemigo energia '
-    1' ec()=enemigo color
+    1' ec()=enemigo contador
     12010 DIM ex(em),ey(em),ev(em),el(em),es(em),ep(em),ec(em),ee(em)
 12030 return
 
@@ -510,23 +459,19 @@
     1 'Le asignamos la velocidad horizontal y vertical'
     12530 ev(en)=8:el(en)=8
     1 'Los enemigos son a partir del sprite 7
-    12540 es(en)=10:ep(en)=9+en
-    12550 ec(en)=6
+    12540 es(en)=es:ep(en)=9+en
     12560 ee(en)=100
 12590 return
 
 1 ' Rutina eliminar enemigo'
     12600 if en<=0 then return
     12600 ex(ed)=ex(en):ey(ed)=ey(en):ev(ed)=ev(en):el(ed)=el(en):es(ed)=es(en):ep(ed)=ep(en):ec(ed)=ec(en):ee(ed)=ee(en)
-    12610 put sprite ep(ed),(0,212),ec(ed),es(ed)
+    12610 put sprite ep(ed),(0,212),,es(ed)
     12650 en=en-1
 12660 return
 
 1 'Rutina eliminar todos los enemigos'
     12700 en=0
-    1 '12705 for i=1 to en
-    1 '    12710 ed=i: gosub 12600
-    1 '12720 next i
 12790 return
 
 
@@ -546,9 +491,10 @@
 13020 return
 
 1 'Cargar mundo con los mapas de los niveles en el buffer o array'
-    13100 'esto almacenará el array a partir de la posición 8dc8 de la RAM'
+    13100 'esto almacenará el array a partir de la posición h10000 de la VRAM'
     13110 if mu=0 then bload"world0.bin",r:gosub 20000
-    13120 md=&hc001
+    13120 md=&hc901
+
     13130 for f=0 to 23-1
         13140 for c=0 to 200-1
             13150 tn=peek(md):md=md+1
@@ -675,7 +621,8 @@
     1 'te=tile end, determina el final del mundo'
     1 'tc=tile collectable, los que se pueden recoger'
     1 'tw=tile world el tile que se tiene que pintar cuando se recoja un collectable
-    20000 tf=160:te=26:tw=80
+    1 'tile death, tile de muerte, mata al player'
+    20000 tf=160:te=26:tw=80:td=42
     1 'World caprturas, las capturas que necesitas para pasar el mundo'
     1 'wf=world false, variable utilizada por si volv'
     20010 wc=6:wf=0
@@ -692,19 +639,19 @@
 1'          Screen 1
 1'------------------------------------'
     1 'creamos 1 enemigo'
-    20200 gosub 12500:ex(en)=(17*8):ey(en)=17*8
+    20200 gosub 12500:ex(en)=(17*8):ey(en)=17*8:es(en)=11
 20290 return
 1'------------------------------------'
 1'          Screen 2
 1'------------------------------------'
     1 'creamos 1 enemigo'
-    20300 gosub 12500:ex(en)=20*8:ey(en)=20*8
+    20300 gosub 12500:ex(en)=20*8:ey(en)=20*8:es(en)=11
 20390 return
 1'------------------------------------'
 1'          Screen 3
 1'------------------------------------'
     1 'creamos 1 enemigo'
-    20400 gosub 12500:ex(en)=16*8:ey(en)=10*8
+    20400 gosub 12500:ex(en)=16*8:ey(en)=10*8:es(en)=11
 20490 return
 1'------------------------------------'
 1'          Screen 4
@@ -716,7 +663,7 @@
 1'          Screen 5
 1'------------------------------------'
     1 'creamos 1 enemigo'
-    20600 gosub 12500:ex(en)=15*8:ey(en)=14*8
+    20600 gosub 12500:ex(en)=15*8:ey(en)=14*8:es(en)=11
 20690 return
 
 

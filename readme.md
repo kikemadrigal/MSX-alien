@@ -24,9 +24,9 @@ https://kikemadrigal.github.io/MSX1-MSX2-assambler-basic-fusion-c-alien/?disk=MS
 
 
 
-<img src=images\2.PNG width=300px />
-<img src=images\2-1.PNG width=300px />
-<img src=images\2-2.PNG width=300px />
+<img src=docs/MSX2/loader.PNG width=300px />
+<img src=docs/MSX2/menu.PNG width=300px />
+<img src=docs/MSX2/screen1.PNG width=300px />
 
 ## Sprite sheet
 
@@ -44,22 +44,27 @@ https://kikemadrigal.github.io/MSX1-MSX2-assambler-basic-fusion-c-alien/?disk=MS
 <img src=docs/MSX2/sprite10.PNG width=50 align="left"  />
 <img src=docs/MSX2/sprite11.PNG width=50 align="left"  />
 <img src=docs/MSX2/sprite12.PNG width=50 align="left"  />
-<img src=docs/MSX2/sprite13.PNG width=50 align="left"  />
+
 <BR clear="left">
-
-
+<img src=docs/MSX2/sprite13.PNG width=50 align="left"  />
+<img src=docs/MSX2/sprite14.PNG width=50 align="left"  />
+<img src=docs/MSX2/sprite15.PNG width=50 align="left"  />
+<img src=docs/MSX2/sprite16.PNG width=50 align="left"  />
+<img src=docs/MSX2/sprite17.PNG width=50 align="left"  />
+<BR clear="left">
 
 
 ## Tileset
 
-<img src=docs/MSX2/tileset.PNG width=300  />
-
+<img src=docs/MSX2/tileset.png width=500  />
+<BR >
 
 
 
 ## Tilemap
 
-<img src=docs/MSX2/tilemap.PNG width=600  />
+<img src=docs/MSX2/tilemap.PNG width=1200  />
+<br>
 
 
 ## ASM
