@@ -28,7 +28,7 @@ https://kikemadrigal.github.io/MSX1-MSX2-assambler-basic-fusion-c-alien/?disk=MS
 <img src=images\2-1.PNG width=300px />
 <img src=images\2-2.PNG width=300px />
 
-## Sprite sseet
+## Sprite sheet
 
 <img src=docs/MSX2/sprite0.PNG width=50 align="left"  />
 <img src=docs/MSX2/sprite1.PNG width=50 align="left"  />
@@ -47,6 +47,19 @@ https://kikemadrigal.github.io/MSX1-MSX2-assambler-basic-fusion-c-alien/?disk=MS
 <img src=docs/MSX2/sprite13.PNG width=50 align="left"  />
 <BR clear="left">
 
+
+
+
+## Tileset
+
+<img src=docs/MSX2/tileset.PNG width=300  />
+
+
+
+
+## Tilemap
+
+<img src=docs/MSX2/tilemap.PNG width=600  />
 
 
 ## ASM
