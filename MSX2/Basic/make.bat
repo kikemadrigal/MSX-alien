@@ -6,6 +6,10 @@ rem necesitamos el .bin de la pantalla de carga y del reproductor de música
 
 start /wait tools/sjasm/sjasm.exe src/world0.asm
 move /y world0.bin .\bin
+start /wait tools/sjasm/sjasm.exe src/world1.asm
+move /y world1.bin .\bin
+start /wait tools/sjasm/sjasm.exe src/world2.asm
+move /y world2.bin .\bin
 rem del /F src\music.lst
 
 

@@ -1,20 +1,21 @@
 10definta-z
 20defusr=&h003B:a=usr(0):defusr1=&h003E:a=usr1(0):defusr2=&H90:a=usr2(0)
 20defusr3=&H41:defusr4=&H44
+30goto14000
 100 print #1, "Cargando mapa en array (en RAM)"
+105gosub6500
 110gosub13000:gosub13100
 130gosub10200
 140gosub11000
 150gosub12000
 160gosub20100
 520strig(0)on:onstriggosub10500
-550gosub14000
-560gosub13300
 580gosub6000
 1000gosub2000
 1020gosub4000
 1040gosub5000
 1050ifpv<=0thengosub1100:goto130
+1055ifmu=1thenputsprite0,(0,212),,p1:ma=ma+1:gosub13100:mu=0:ifma>5thengoto14100
 1060'gosub6100
 1090goto1000
 1100eraseex,ey,ev,el,es,ep,ec,ee
@@ -49,16 +50,19 @@
 3690return
 4000'Player'
     4010 if mc>=200-32 then print #1,"FINAL": return
-4040ifpx>255thenputsprite0,(0,212),,p1:gosub13600:py=18*8:px=0:gosub12700:ms=ms+1:gosub13800:gosub6000
+4015ifpx>255thenputsprite0,(0,212),,p1:gosub13600:py=18*8:px=0:gosub12700:ms=ms+1:gosub13800:gosub6000
 4020ifpx<0thenpx=0
 4030ifpy>180thengoto10400
-4050tx=px/8+mc:ty=py/8:ifpx<=0thentx=0:ifpy<=0thenty=0
-4055t0=m(tx,ty+1)
-4056ift0<26thenm(tx,ty+1)=tw:copy((tw-64)*8,2*8)-(((tw-64)*8)+7,(2*8)+7),1to(px-4,py+8),0:copy((tw-64)*8,2*8)-(((tw-64)*8)+7,(2*8)+7),1to(px,py+8),0:wc=wc-1:gosub6000:re=6:gosub7000
-4057ift0=tdthengosub10400
+4035tx=px/8+mc:ty=py/8:ifpx<=0thentx=0:ifpy<=0thenty=0
+4040t0=m(tx,ty+1)
+4045ift0<26thenm(tx,ty+1)=tw:line(px-8,py+8)-(px+8,py+16),14,bf:wc=wc-1:gosub6000:re=6:gosub7000
+4050ift0=tdthengosub10400:beep
+4055_turboon(m(),te,t0,t3,t5,t7,tx,ty,mu)
+4058ift0=teandwc=0thenmu=1
 4060t3=m(tx+1,ty+1)
 4070t5=m(tx,ty+2)
 4080t7=m(tx,ty+1)
+4085_turbooff
 4090ift3>=tfandpa=0thenpx=px-pvelseift7>=tfandpa=0thenpx=px+pv
 4110ifpa=1andt5>=tfandpl<0thenpa=0:pl=-pl
 4120ifpa=1thenpy=py-pl
@@ -66,7 +70,8 @@
 4140ifpa=1andpy>pothenpy=po:pl=-pl:pa=0
 4150ifpa=0andt5<tfthenpy=py+pl
 4290return
-5000ifpd=3orpd=1orpd=2thenputsprite0,(px,py),,p1
+5000ifbo=1thengosub12850
+5010ifpd=3orpd=1orpd=2thenputsprite0,(px,py),,p1
 5020ifpd=7thenputsprite0,(px,py),,p3
 5100gosub11700
 5200ifen<=0thenreturn
@@ -83,12 +88,17 @@
 5310nexti
 5990return
 6000line(0,184)-(256,212),1,bf
-    6010 preset (10,190):print #1,"Capturas que faltan: "wc
-6020preset(10,200):print#1,"Vidas:"pv"Level:"mu"-"ms
-6030'preset(10,208):print#1,"libre:"fre(0)
+    6010 preset (10,186):print #1,"Capturas que faltan: "wc
+    6020 preset (10,194):print #1,"Vidas: "pv" Level: "mu"-"ms
+    6030 if bo=1 then preset (10,202):print #1,"Energia boss: "be
 6090return
-6100preset(10,40):print#1,"ev"ev(1)"es"es(1)
-6110return
+6100'preset(10,30):print#1,"bo"bo"dt(1)"dt(1)
+6105preset(10,40):print#1,"TIME"TIME/60
+6190return
+6500al=0:tf=0:te=0:tw=0
+6510time=0
+6550t1=0:t3=0:t5=0:t7=0
+6990return
 7000a=usr2(0)
 7010ifre=1thenPLAY"O5L8V4M8000AADFG2AAAAr60GEFDCDGR8A2A2A8","o1v4cr8o2cr8o1v6cr8o2v4cr8o1cr8o2v6cr8"
 7050ifre=5thenplay"l10o4a"
@@ -102,7 +112,6 @@
 7190return
 10200px=16:py=13*8:pw=16:ph=16:pv=4:pl=8:pj=0:pa=0:pd=3'dimj(7):po=0:pd=3
 10210'j(0)=-8:j(1)=-8:j(2)=-8:j(3)=0:j(4)=8:j(5)=8:j(6)=8
-10220t1=0:t3=0:t5=0:t7=0
 10230p1=0:p2=1:p3=2:p4=3
 10240pp=0:ps=0
 10250pe=100
@@ -115,12 +124,14 @@
 10500re=5:gosub7000
 10510gosub11500
 10590return
-11000dm=3:dn=0:dd=0:ds=6:dc=6:dp=0:dw=8:dh=2
-11010DIMdx(dm),dy(dm),dv(dm),dp(dm)
+11000dm=5:dn=0:dd=0:ds=6:dc=6:dp=0:dw=8:dh=2
+11010DIMdx(dm),dy(dm),di(dm),dv(dm),dp(dm),dt(dm)
 11060return
 11500ifdn>=dmthenreturnelsedn=dn+1
 11510dx(dn)=px+8:dy(dn)=py+8
+11520di(dn)=pd
 11530dv(dn)=8
+11535dt(dn)=0
 11540ds(dn)=ds:dp(dn)=dp+dn
 11580return
 11600putspritedp(dd),(0,212),dc,ds(dd)
@@ -129,9 +140,10 @@
 11690return
 11700ifdn<=0thenreturn
 11710fori=1todn
-11720dx(i)=dx(i)+dv(i)
-11730putspritedp(i),(dx(i),dy(i)),dc,ds(i)
-11740ifdx(i)>256-16thendd=i:gosub11600
+11720ifdi(i)=1ordi(i)=2ordi(i)=3thendx(i)=dx(i)+dv(i)elsedx(i)=dx(i)-dv(i)
+11730ifdt(i)=0thenputspritedp(i),(dx(i),dy(i)),dc,ds(i)elseifdt(i)=1thenputspritedp(i),(dx(i),dy(i)),dc,18
+11740ifdx(i)<0ordx(i)>256-16thendd=i:gosub11600
+11742ifbo=1anddt(i)=0thenifdx(i)<bx+bwanddx(i)+dw>bxanddy(i)<by+bhanddy(i)+dh>bythenbe=be-10:dd=i:gosub6000:gosub11600:beep
 11750nexti
 11790return
 12000em=3:en=0:es=7
@@ -150,11 +162,18 @@
 12660return
 12700en=0
 12790return
-    13000 print #1, "Pintando mapa"
-13010dimm(200,26):mc=0:mu=0:ms=0
+12800bo=0:bx=0:bw=24:bh=16:bz=0:bi=0:by=0:be=100:bv=8:bd=3
+12810return
+12850bi=bx:bz=by:by=by-bv
+12855ifbn=0thenline(bx,bz)-(bx+bw,bz+bh),14,bf:copy(24,64)-(48,80),1to(bx,by),0,tpset:ifby<100orby>154thenbv=-bv
+12890ifbe<=0thenbo=0:line(bx,by)-(bx+bw,bz+bh),14,bf:m(195,20)=te:m(195,21)=te:copy(te*8,0*8)-((te*8)+8,(0*8)+8),1to(28*8,21*8),0,tpset:re=2:gosub7000elseiftime/60>10thengosub11500:dt(dn)=1:di(dn)=bd:dx(dn)=bx:dy(dn)=by:time=0
+12895return
+    13000 'print #1, "Pintando mapa"
+13010dimm(200,26):mc=0:ma=0:ms=0:mu=0
 13020return
-13100'estoalmacenaráelarrayapartirdelaposiciónh10000delaVRAM'
-13110ifmu=0thenbload"world0.bin",r:gosub20000
+13100'estoalmacenaráelarrayapartirdelaposiciónhc901delaVRAM'
+    13110 if ma=0 then cls: preset(0,100):print #1,"Pintando Mundo 1, espere...":bload"world0.bin",r:gosub 20000
+    13115 if ma=1 then cls: preset(0,100):print #1,"Pintando Mundo 2, espere...":bload"world1.bin",r:gosub 21000
 13120md=&hc901
 13130forf=0to23-1
 13140forc=0to200-1
@@ -162,6 +181,7 @@
 13160m(c,f)=tn
 13170nextc
 13180nextf
+13185gosub13300
 13190return
 13300_turboon(m())
 13310forf=0to23-1
@@ -204,7 +224,15 @@
 13820ifms=3thengosub20400
 13830ifms=4thengosub20500
 13840ifms=5thengosub20600
-13890return
+13850ifms=6thengosub21200
+13860ifms=7thengosub21300
+13870ifms=8thengosub21400
+13880ifms=9thengosub21500
+13890ifms=10thengosub21600
+13900ifms=11thengosub22200
+13910ifms=12thengosub22300
+13920ifms=13thengosub22400
+13990return
     14000 cls:preset (10,30):  print #1,"@@@@  @  @@@@  @ @@@@@ @  @   @"
     14010 preset (10,40):      print #1,"@    @ @ @@@@  @   @  @ @ @ @ @"
     14020 preset (10,50):      print #1,"@@@@@   @@     @   @ @   @@  @@"
@@ -213,9 +241,16 @@
     14050 preset (10,160): print #1, "Cursores para mover, pulsa una tecla para continuar"
     14060 preset (10,180): print #1, "libre: "fre(0)
 14070ifinkey$=""thengoto14070
-14090return
+14090goto100
+14100cls:preset(10,70):print#1,"Felicidades"ma
+    14110 preset (10,80):      print #1,"Has completado la mision"
+    14120 preset (10,90):      print #1,"Lgica:Kikemadrigal"
+    14130 preset (10,100):      print #1,"gráficos:Kikemadrigal"
+14140ifinkey$=""thengoto14040
+14150gosub1100
+14190:goto100
 20000tf=160:te=26:tw=80:td=42
-20010wc=6:wf=0
+20010wc=12
 20090return
 20100gosub12500:ex(en)=26*8:ey(en)=20*8
 20190return
@@ -227,5 +262,29 @@
 20490return
 20500gosub12500:ex(en)=26*8:ey(en)=20*8
 20590return
-20600gosub12500:ex(en)=15*8:ey(en)=14*8:es(en)=11
+20600gosub12800:bo=1:bn=0:be=100:bx=150:by=120:bd=7:gosub6000
 20690return
+21000tf=160:te=26:tw=80:td=42
+21010px=8:py=19*8
+21010wc=6
+21090return
+21100gosub12800:ex(en)=(17*8):ey(en)=17*8:es(en)=11
+21190return
+21200gosub12500:ex(en)=(17*8):ey(en)=17*8:es(en)=11
+20290return
+21300gosub12500:ex(en)=20*8:ey(en)=20*8:es(en)=11
+21390return
+21400gosub12500:ex(en)=16*8:ey(en)=10*8:es(en)=11
+21490return
+21500gosub12500:ex(en)=26*8:ey(en)=20*8
+21590return
+21600'mada'
+21690return
+22000tf=160:te=26:tw=80:td=42
+22010px=8:py=19*8
+22010wc=6
+22090return
+22100gosub12800:ex(en)=(17*8):ey(en)=17*8:es(en)=11
+22190return
+22200gosub12500:ex(en)=(17*8):ey(en)=17*8:es(en)=11
+22290return

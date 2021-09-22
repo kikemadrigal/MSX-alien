@@ -1,0 +1,46 @@
+Sjasm Z80 Assembler v0.42c - www.xl2s.tk             [2021.09.22 - 07:25:55]
+
+src/world2.asm
+Errors: 0
+
+       1   00:0000                              output "world2.bin"
+       2   00:C900                      
+       3   00:C900  FE                      db   #fe               ; ID archivo binario, siempre hay que poner el mismo 0FEh
+       4   00:C901  00 C9                   dw   INICIO            ; dirección de inicio
+       5   00:C903  01 C9                   dw   FINAL - 1         ; dirección final
+       6   00:C905  00 C9                   dw   INICIO             ; dircción del programa de ejecución (para cuando pongas r en bload"nombre_programa", r)
+       7   00:C907                      
+       8   00:C907                          org #c900 ; o 57344, org se utiliza para decirle al z80 en que posición de memoria RAM empieza nuestro programa en ensamblador
+       9   00:C900                      
+      10   00:C900                      INICIO:
+      11   00:C900  C9                      ret ; el ret es necesario para que vuelva al basic
+      12   00:C901                      level1:
+      13   00:C901                      
+      14   00:C901  00                      db 0
+      15   00:C902                      
+      16   00:C902                      
+      17   00:C902                      FINAL:
+
+    LABELS
+-------------------------------------------------
+00:0000C900   INICIO
+00:0000C901 X level1
+00:0000C902   FINAL
+
+
+ Output: src/world2.out
+-------------------------------------------------
+
+ Page: 00
+  Org: 0000C900  Size: *  Used: 00000000
+
+    No output
+
+ Output: world2.bin
+-------------------------------------------------
+
+ Page: 00
+  Org: 0000C900  Size: *  Used: 00000009
+
+   Address   Length Align   Label
+   0000C900       9         INICIO
