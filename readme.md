@@ -25,10 +25,10 @@ https://kikemadrigal.github.io/MSX1-MSX2-assambler-basic-fusion-c-alien/?disk=MS
 
 
 <img src=docs/MSX2/loader.PNG width=300px align="left" />
-<img src=docs/MSX2/menu.PNG width=300px />
-<img src=docs/MSX2/screen1.PNG width=300px  />
-<img src=docs/MSX2/screen5.PNG width=300px />
-<img src=docs/MSX2/screen6.PNG width=300px />
+<img src=docs/MSX2/menu.PNG width=300px align="left"/>
+<img src=docs/MSX2/screen1.PNG width=300px align="left" />
+<img src=docs/MSX2/screen5.PNG width=300px align="left"/>
+<img src=docs/MSX2/screen6.PNG width=300px align="left"/>
 <BR clear="left">
 
 ## Sprite sheet
